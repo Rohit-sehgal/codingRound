@@ -1,27 +1,20 @@
 package pages.flightbooking;
 
-import com.sun.javafx.PlatformUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 import pages.base.BasePage;
 import util.config.DriverManager;
 import util.system.Util;
 
-import java.io.File;
 import java.util.List;
 
 public class FlightBookingPage extends BasePage{
-
-    WebDriver driver;
-
 
     @FindBy(id = "OneWay")
     private WebElement oneWay;

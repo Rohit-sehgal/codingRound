@@ -41,16 +41,15 @@ public class SystemUtils {
 
     public static void openReportInChrome() throws IOException {
 //        String reportName = String.valueOf(SystemU().get("reportName"));
-        String path = System.getProperty("user.dir") + File.separator + "target" + File.separator + "reportName";
+
+        String path = System.getProperty("user.dir") + File.separator + "target" + File.separator + "surefire-reports" + File.separator + "index.html";
         Runtime.getRuntime().exec(String.format(chromePath + "  %s", path));
     }
-
 
 
     public static void addScreenshotToReport() {
         String imgPath = Util.getInstance().takeScreenShot();
     }
-
 
 
 }

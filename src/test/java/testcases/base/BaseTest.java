@@ -1,4 +1,4 @@
-package pages.base;
+package testcases.base;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
@@ -21,15 +21,7 @@ public class BaseTest {
 
     @BeforeSuite
     public void initializeFramework() {
-        DriverFactory.setBrowserFileDownloadLocation(System.getProperty("user.dir") + "/target/");
         configureLogging();
-        if (System.getProperty("os.name").equalsIgnoreCase("mac")) {
-            DriverFactory.setchromeDriverExePath(System.getProperty("user.dir") + "/drivers/chromedriver");
-        } else {
-            DriverFactory.setchromeDriverExePath(System.getProperty("user.dir") + "/drivers/chromedriver.exe");
-        }
-        DriverFactory.setchromeDriverExePath(System.getProperty("user.dir") + "/drivers/chromedriver");
-        DriverFactory.setGridURL("");
         ConfigManager.setProperties();
         ConfigManager.updateProperties();
 
@@ -88,7 +80,7 @@ public class BaseTest {
 
     @AfterMethod
     public void afterMethod(ITestResult result) {
-
+            DriverManager.getDriver().navigate().refresh();
         try {
             if (result.getStatus() == ITestResult.SUCCESS) {
                 //Do your excel writing stuff here

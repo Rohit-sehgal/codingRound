@@ -1,20 +1,11 @@
 package pages.signin;
 
-import com.sun.javafx.PlatformUtil;
-import jdk.nashorn.internal.ir.visitor.SimpleNodeVisitor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import pages.base.BasePage;
 import util.system.Util;
-
-import java.io.File;
 
 public class SignInPage extends BasePage {
 
@@ -37,6 +28,11 @@ public class SignInPage extends BasePage {
         signInPage.yourTrips.click();
         signInPage.signIn.click();
         Util.getInstance().waitForPageToLoad(ExpectedConditions.frameToBeAvailableAndSwitchToIt("modal_window"), 10);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Util.getInstance().waitForPageToLoad(ExpectedConditions.visibilityOf(signInPage.signInButton), 10);
         signInPage.signInButton.click();
         return signInPage.errors1.getText();
