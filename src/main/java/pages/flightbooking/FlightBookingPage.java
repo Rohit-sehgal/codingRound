@@ -6,88 +6,77 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.base.BasePage;
+import util.config.DriverManager;
+import util.system.Util;
 
 import java.io.File;
 import java.util.List;
 
-public class FlightBookingPage {
+public class FlightBookingPage extends BasePage{
 
     WebDriver driver;
 
 
-    @Test
-    public void testThatResultsAppearForAOneWayJourney() {
+    @FindBy(id = "OneWay")
+    private WebElement oneWay;
 
-        setDriverPath();
-        driver = new ChromeDriver();
-        driver.get("https://www.cleartrip.com/");
-        waitFor(2000);
-        driver.findElement(By.id("OneWay")).click();
+    @FindBy(id = "FromTag")
+    private WebElement fromTag;
 
-        driver.findElement(By.id("FromTag")).clear();
-        driver.findElement(By.id("FromTag")).sendKeys("Bangalore");
+    @FindBy(id = "ToTag")
+    private WebElement toTag;
 
-        //wait for the auto complete options to appear for the origin
+    @FindBy(xpath = "//*[@id='ui-datepicker-div']/div[1]/table/tbody/tr[5]/td[7]/a")
+    private WebElement calendarDate;
 
-        waitFor(2000);
-        List<WebElement> originOptions = driver.findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
+    @FindBy(id = "SearchBtn")
+    private WebElement searchBtn;
+
+    @FindBy(className = "searchSummary")
+    private WebElement searchSummary;
+
+    public FlightBookingPage load() {
+        return (FlightBookingPage) openPage(FlightBookingPage.class);
+    }
+
+
+    public void fillDataForAOneWayJourney() {
+        oneWay.click();
+        fromTag.clear();
+        fromTag.sendKeys("Bangalore");
+        Util.getInstance().waitForPageToLoad(ExpectedConditions.visibilityOf(DriverManager.getDriver().findElement(By.id("ui-id-1"))),10);
+        List<WebElement> originOptions = DriverManager.getDriver().findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
         originOptions.get(0).click();
-
-        driver.findElement(By.id("ToTag")).clear();
-        driver.findElement(By.id("ToTag")).sendKeys("Delhi");
-
-        //wait for the auto complete options to appear for the destination
-
-        waitFor(2000);
+        toTag.clear();
+        toTag.sendKeys("Delhi");
+        Util.getInstance().waitForPageToLoad(ExpectedConditions.visibilityOf(DriverManager.getDriver().findElement(By.id("ui-id-2"))),10);
         //select the first item from the destination auto complete list
-        List<WebElement> destinationOptions = driver.findElement(By.id("ui-id-2")).findElements(By.tagName("li"));
+        List<WebElement> destinationOptions = DriverManager.getDriver().findElement(By.id("ui-id-2")).findElements(By.tagName("li"));
         destinationOptions.get(0).click();
-
-        driver.findElement(By.xpath("//*[@id='ui-datepicker-div']/div[1]/table/tbody/tr[5]/td[7]/a")).click();
-
+        calendarDate.click();
         //all fields filled in. Now click on search
-        driver.findElement(By.id("SearchBtn")).click();
-
-        waitFor(5000);
-        //verify that result appears for the provided journey search
+        searchBtn.click();
+        Util.getInstance().waitForPageToLoad(ExpectedConditions.visibilityOf(searchSummary),10);
         Assert.assertTrue(isElementPresent(By.className("searchSummary")));
-
-        //close the browser
-        driver.quit();
-
     }
-
-
-    private void waitFor(int durationInMilliSeconds) {
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
 
     private boolean isElementPresent(By by) {
         try {
-            driver.findElement(by);
+            DriverManager.getDriver().findElement(by);
             return true;
         } catch (NoSuchElementException e) {
             return false;
         }
     }
 
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "driver\\win\\" + "chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
-        }
+    @Override
+    public ExpectedCondition getPageLoadCondition() {
+        return ExpectedConditions.visibilityOf(oneWay);
     }
-
 }

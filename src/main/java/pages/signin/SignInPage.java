@@ -1,56 +1,49 @@
 package pages.signin;
 
 import com.sun.javafx.PlatformUtil;
+import jdk.nashorn.internal.ir.visitor.SimpleNodeVisitor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.base.BasePage;
+import util.system.Util;
 
 import java.io.File;
 
-public class SignInPage {
+public class SignInPage extends BasePage {
 
+    @FindBy(linkText = "Your trips")
+    private WebElement yourTrips;
 
+    @FindBy(id = "SignIn")
+    private WebElement signIn;
 
-    @Test
-    public void shouldThrowAnErrorIfSignInDetailsAreMissing() {
+    @FindBy(id = "signInButton")
+    private WebElement signInButton;
 
-        setDriverPath();
-        WebDriver driver = new ChromeDriver();
-        driver.get("https://www.cleartrip.com/");
-        waitFor(2000);
+    @FindBy(id = "errors1")
+    private WebElement errors1;
 
-        driver.findElement(By.linkText("Your trips")).click();
-        driver.findElement(By.id("signin")).click();
-        waitFor(2000);
-        driver.switchTo().frame("modal_window");
-        driver.findElement(By.id("signInButton")).click();
+    SignInPage signInPage;
 
-        String errors1 = driver.findElement(By.id("errors1")).getText();
-        Assert.assertTrue(errors1.contains("There were errors in your submission"));
-        driver.quit();
+    public String addSignInDetailsAndGetMissingErrorText() {
+        signInPage = (SignInPage) openPage(SignInPage.class);
+        signInPage.yourTrips.click();
+        signInPage.signIn.click();
+        Util.getInstance().waitForPageToLoad(ExpectedConditions.frameToBeAvailableAndSwitchToIt("modal_window"), 10);
+        Util.getInstance().waitForPageToLoad(ExpectedConditions.visibilityOf(signInPage.signInButton), 10);
+        signInPage.signInButton.click();
+        return signInPage.errors1.getText();
     }
 
-    private void waitFor(int durationInMilliSeconds) {
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+    @Override
+    public ExpectedCondition getPageLoadCondition() {
+        return ExpectedConditions.visibilityOf(yourTrips);
     }
-
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "driver\\win\\" + "chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
-        }
-    }
-
-
 }

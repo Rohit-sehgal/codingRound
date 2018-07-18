@@ -40,18 +40,12 @@ public class SystemUtils {
     }
 
     public static void openReportInChrome() throws IOException {
-        String reportName = String.valueOf(SystemUtils.getCentralStorage().get("reportName"));
-        String path = System.getProperty("user.dir") + File.separator + "target" + File.separator + reportName;
+//        String reportName = String.valueOf(SystemU().get("reportName"));
+        String path = System.getProperty("user.dir") + File.separator + "target" + File.separator + "reportName";
         Runtime.getRuntime().exec(String.format(chromePath + "  %s", path));
     }
 
-    public static void addValueToGlobalStorage(String key, String value) {
-        getCentralStorage().put(key, value);
-    }
 
-    public static Map getCentralStorage() {
-        return hashMap;
-    }
 
     public static void addScreenshotToReport() {
         String imgPath = Util.getInstance().takeScreenShot();

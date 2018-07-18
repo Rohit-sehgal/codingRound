@@ -7,12 +7,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
+import pages.base.BasePage;
 
 import java.io.File;
 
-public class HotelBookingPage {
+public class HotelBookingPage extends BasePage {
 
     @FindBy(linkText = "Hotels")
     private WebElement hotelLink;
@@ -26,34 +29,22 @@ public class HotelBookingPage {
     @FindBy(id = "travellersOnhome")
     private WebElement travellerSelection;
 
-    @Test
-    public void shouldBeAbleToSearchForHotels() {
-        setDriverPath();
-        WebDriver driver = new ChromeDriver();
-        driver.get("https://www.cleartrip.com/");
-        PageFactory.initElements(driver, this);
+    HotelBookingPage hotelBookingPage;
+
+    public HotelBookingPage load() {
+        return (HotelBookingPage) openPage(HotelBookingPage.class);
+    }
+
+    public void searchForHotels() {
         hotelLink.click();
-
         localityTextBox.sendKeys("Indiranagar, Bangalore");
-
         new Select(travellerSelection).selectByVisibleText("1 room, 2 adults");
         travellerSelection.sendKeys(Keys.ESCAPE);
         searchButton.click();
-
-        driver.quit();
-
     }
 
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "driver\\win\\" + "chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
-        }
+    @Override
+    public ExpectedCondition getPageLoadCondition() {
+        return ExpectedConditions.visibilityOf(hotelLink);
     }
-
 }
