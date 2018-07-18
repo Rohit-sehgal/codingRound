@@ -1,0 +1,11 @@
+- Framework support
+    - Abstraction in terms of Base Page & BaseTest classes
+    - For reusability few places used singleton pattern
+    - every config can be placed inside config.properties
+    - seperate layer for page objects & test cases for better readability
+    - logging enabled for debugging
+
+
+    --------------------------------------------------------------------------
+    To run project simply run below command
+           mvn clean test
